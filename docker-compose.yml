@@ -12,11 +12,7 @@ services:
       - ./app:/var/www/html/
       - ./php/dev/php.ini:/usr/local/etc/php/php.ini
     networks:
-      app-network:
-        aliases:
-          - app.docker.local
-    depends_on:
-      - mysql
+      - app-network
   #Nginx Service
   webserver:
     image: faizanbashir/nginx:1.12
@@ -30,11 +26,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/ngxin.conf
       - ./nginx/conf.d/:/etc/nginx/conf.d
     networks:
-      app-network:
-        aliases:
-          - app.docker.local
-    depends_on:
-      - app
+      - app-network
   #MySQL Service
   db:
     image: mysql:5.7.22
@@ -43,18 +35,13 @@ services:
       - "3306:3306"
     environment:
       MYSQL_DATABASE: laravel
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
-      MYSQL_ROOT_PASSWORD: root
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
       - dbdata:/var/lib/mysql/
       - ./mysql/my.cnf:/etc/mysql/my.cnf
     networks:
-      app-network:
-        aliases:
-          - mysql.docker.local
+      - app-network
 #Docker Networks
 networks:
   app-network:
