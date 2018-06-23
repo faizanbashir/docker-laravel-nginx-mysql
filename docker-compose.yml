@@ -1,0 +1,64 @@
+version: '3'
+services:
+  #PHP Service
+  app:
+    image: faizanbashir/php:7.2-alpine-fpm
+    container_name: app
+    restart: unless-stopped
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    volumes:
+      - ./app:/var/www/html/
+      - ./php/dev/php.ini:/usr/local/etc/php/php.ini
+    networks:
+      app-network:
+        aliases:
+          - app.docker.local
+    depends_on:
+      - mysql
+  #Nginx Service
+  nginx:
+    image: faizanbashir/nginx:1.12
+    container_name: web
+    restart: unless-stopped
+    ports: 
+      - "80:80"
+    volumes:
+      - ./app/:/var/www/html/
+      - ./nginx/nginx.conf:/etc/nginx/ngxin.conf
+      - ./nginx/conf.d/:/etc/nginx/conf.d
+    networks:
+      app-network:
+        aliases:
+          - app.docker.local
+    depends_on:
+      - app
+  #MySQL Service
+  mysql:
+    image: mysql:5.7.22
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - dbdata:/var/lib/mysql/
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      app-network:
+        aliases:
+          - mysql.docker.local
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
+#Volumes 
+volumes:
+  dbdata:
+    driver: local
