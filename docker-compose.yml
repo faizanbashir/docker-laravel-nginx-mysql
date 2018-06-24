@@ -10,7 +10,7 @@ services:
       SERVICE_TAGS: dev
     volumes:
       - ./app:/var/www/html/
-      - ./php/dev/php.ini:/usr/local/etc/php/php.ini
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
       - app-network
   #Nginx Service
