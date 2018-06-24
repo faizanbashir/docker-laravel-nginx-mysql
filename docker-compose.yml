@@ -24,7 +24,6 @@ services:
     volumes:
       - ./app/:/var/www/html/
       - ./nginx/nginx.conf:/etc/nginx/ngxin.conf
-      - ./nginx/conf.d/:/etc/nginx/conf.d
     networks:
       - app-network
   #MySQL Service
